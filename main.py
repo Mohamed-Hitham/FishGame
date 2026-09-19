@@ -24,7 +24,16 @@ def nextLevel():
         chest.setPosition()
         sword.setPosition()
         if MikeStatistics.level == 2:
-            pass
+            for i in range(3):
+                crab = Fish(screen, "Crab.png", "Crab.png")
+                crab.movingX = True
+                crab.rect.y = 625
+                crab.crab = True
+                fishlist.append(crab)
+            for i in range(6):
+                tuna = Tuna(screen, "Fish 2 R.png", "Fish 2 L.png", Mike)
+                fishlist.append(tuna)
+        #добавить 3 уровень
 
 
 def treasureGrab(treasure):
@@ -71,11 +80,14 @@ def fishTouch(fish):
 
 
 def killFish(pulka, fish):
+    if fish.crab == True:
+        return
     if touchCheck(pulka, fish) == True:
         bullets.remove(pulka)
         fishlist.remove(fish)
         fish.fishKill.play()
         MikeStatistics.score += 10
+
 
 pygame.init()
 clock = pygame.time.Clock()
@@ -88,8 +100,8 @@ chest = Treasure(screen, "Chest.png")
 sword = Treasure(screen, "Sword.png")
 
 fishlist = []
-for i in range(15):
-    fish = Fish(screen)
+for i in range(0):
+    fish = Fish(screen, "FishR.png", "FishL.png")
     fishlist.append(fish)
 
 bullets = []
@@ -143,7 +155,8 @@ while 1 == 1:
         for current in fishlist:
             current.show()
             current.moveX()
-            current.moveY()
+            if current.movingX == False:
+                current.moveY()
             fishTouch(current)
             for i in bullets:
                 killFish(i, current)
@@ -160,7 +173,6 @@ while 1 == 1:
         if firstShow == True:
             startTime = datetime.now()
             firstShow = False
-        print(datetime.now().second - startTime.second)
         if datetime.now().second - startTime.second > 2:
             gameMode = "Game"
         if startTime is None:

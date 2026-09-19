@@ -55,12 +55,15 @@ class Bullet():
         self.screen.blit(self.image, self.rect)
 
 
+
+
+
 class Fish():
-    def __init__(self, screen):
+    def __init__(self, screen, imgR, imgL):
         self.screen = screen
-        self.image = pygame.image.load("FishL.png")
-        self.imageRight = pygame.image.load("FishR.png")
-        self.imageLeft = pygame.image.load("FishL.png")
+        self.image = pygame.image.load(imgR)
+        self.imageLeft = pygame.image.load(imgL)
+        self.imageRight = pygame.image.load(imgR)
         self.rect = self.image.get_rect()
         self.startposition()
         self.rect.y = random.randint(50, 650)
@@ -74,9 +77,12 @@ class Fish():
         self.newY = False
         self.fishKill = pygame.mixer.Sound("fishKill.wav")
         self.touching = False
+        self.movingX = False
+        self.crab = False
 
     def show(self):
         self.screen.blit(self.image, self.rect)
+
 
     def startposition(self):
         self.sideX = random.choice(["right", "left"])
@@ -113,6 +119,32 @@ class Fish():
             self.y -= self.speedy
         self.rect.y = self.y
 
+class Tuna(Fish):
+    def __init__(self, screen, imgR, imgL, mike):
+        super().__init__(screen, imgR, imgL)
+        self.speedx = random.randint(100, 200) / 100
+        self.speedy = random.randint(100, 200) / 200
+        self.startposition()
+        self.mike = mike
+
+    def moveX(self):
+        if self.rect.x < self.mike.rect.x:
+            self.x += self.speedx
+            if self.image != self.imageRight:
+                self.image = self.imageRight
+        else:
+            self.x -= self.speedx
+            if self.image != self.imageLeft:
+                self.image = self.imageLeft
+        self.rect.x = self.x
+
+
+    def moveY(self):
+        if self.rect.y < self.mike.rect.y:
+            self.y += self.speedy
+        else:
+            self.y -= self.speedy
+        self.rect.y = self.y
 
 class Statistics():
     def __init__(self, screen):
@@ -162,7 +194,7 @@ class Diver():
         self.moveleft = False
         self.moveup = False
         self.movedown = False
-        self.speed = 1.2
+        self.speed = 10
         self.x = self.rect.centerx
         self.y = self.rect.y
         self.handsFree = True
@@ -187,9 +219,11 @@ class Diver():
                 self.x = self.rect.x
             self.x -= self.speed
         if self.movedown == True:
-            self.y += self.speed
+            if self.rect.top < 710:
+                self.y += self.speed
         if self.moveup == True:
-            self.y -= self.speed
+            if self.rect.bottom > 40:
+                self.y -= self.speed
         self.rect.x = self.x
         self.rect.y = self.y
 
