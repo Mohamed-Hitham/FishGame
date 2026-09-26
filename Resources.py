@@ -65,12 +65,13 @@ class Fish():
         self.imageLeft = pygame.image.load(imgL)
         self.imageRight = pygame.image.load(imgR)
         self.rect = self.image.get_rect()
-        self.startposition()
         self.rect.y = random.randint(50, 650)
+        self.startposition()
         self.speedx = random.randint(50, 150)/100
         self.speedy = random.randint(50, 150)/200
         self.x = self.rect.x
         self.y = self.rect.y
+
         self.finaleX = random.randint(0, 1300)
         self.newX = False
         self.finaleY = random.randint(50, 700)
@@ -79,6 +80,8 @@ class Fish():
         self.touching = False
         self.movingX = False
         self.crab = False
+        self.hp = 1
+
 
     def show(self):
         self.screen.blit(self.image, self.rect)
@@ -91,6 +94,7 @@ class Fish():
             self.image = self.imageRight
         else:
             self.rect.centerx = random.randint(1300, 2000)
+            self.image = self.imageLeft
     def moveX(self):
         if self.newX == True:
             self.finaleX = random.randint(0, 1300)
@@ -122,8 +126,8 @@ class Fish():
 class Tuna(Fish):
     def __init__(self, screen, imgR, imgL, mike):
         super().__init__(screen, imgR, imgL)
-        self.speedx = random.randint(100, 200) / 100
-        self.speedy = random.randint(100, 200) / 200
+        self.speedx = random.randint(60, 160) / 100
+        self.speedy = random.randint(60, 160) / 200
         self.startposition()
         self.mike = mike
 
@@ -145,6 +149,11 @@ class Tuna(Fish):
         else:
             self.y -= self.speedy
         self.rect.y = self.y
+
+
+
+
+
 
 class Statistics():
     def __init__(self, screen):
@@ -179,6 +188,20 @@ class Statistics():
         self.levelRect.centerx = 650
         self.screen.blit(self.levelText, self.levelRect)
 
+
+    def gameOver(self):
+        self.GOText = self.levelFont.render("Game Over", True, (200, 0, 0))
+        self.GORect = self.GOText.get_rect()
+        self.GORect.centery = 375
+        self.GORect.centerx = 650
+        self.screen.blit(self.GOText, self.GORect)
+
+    def Win(self):
+        self.WinText = self.levelFont.render("You WON", True, (0, 200, 50))
+        self.WinRect = self.WinText.get_rect()
+        self.WinRect.centery = 375
+        self.WinRect.centerx = 650
+        self.screen.blit(self.WinText, self.WinRect)
 class Diver():
     def __init__(self, screen):
         self.screen = screen
@@ -194,7 +217,7 @@ class Diver():
         self.moveleft = False
         self.moveup = False
         self.movedown = False
-        self.speed = 10
+        self.speed = 1.2
         self.x = self.rect.centerx
         self.y = self.rect.y
         self.handsFree = True

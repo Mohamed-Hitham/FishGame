@@ -30,10 +30,27 @@ def nextLevel():
                 crab.rect.y = 625
                 crab.crab = True
                 fishlist.append(crab)
-            for i in range(6):
+            for i in range(2):
                 tuna = Tuna(screen, "Fish 2 R.png", "Fish 2 L.png", Mike)
                 fishlist.append(tuna)
-        #добавить 3 уровень
+            for i in range(8):
+                fish = Fish(screen, "FishR.png", "FishL.png")
+                fishlist.append(fish)
+        elif MikeStatistics.level == 3:
+            for i in range(5):
+                crab = Fish(screen, "Crab.png", "Crab.png")
+                crab.movingX = True
+                crab.rect.y = 625
+                crab.crab = True
+                fishlist.append(crab)
+            for i in range(7):
+                tuna = Tuna(screen, "Fish 2 R.png", "Fish 2 L.png", Mike)
+                fishlist.append(tuna)
+            shark = Tuna(screen, "SharkR.png", "SharkL.png", Mike)
+            fishlist.append(shark)
+            shark.hp = 5
+        elif MikeStatistics.level == 4:
+            gameMode = "Win"
 
 
 def treasureGrab(treasure):
@@ -58,6 +75,7 @@ def treasureGrab(treasure):
 
 
 def fishTouch(fish):
+    global gameMode
     if Mike.iFrames == False and touchCheck(fish, Mike) == True and fish.touching == False:
         print("fish")
         Mike.damageTaken.play()
@@ -75,6 +93,8 @@ def fishTouch(fish):
         if chest.grabbed == True:
             chest.grabbed = False
             chest.fall = True
+        if MikeStatistics.HP == 0:
+            gameMode = "Game Over"
     if touchCheck(fish, Mike) == False and fish.touching == True:
         fish.touching = False
 
@@ -83,15 +103,19 @@ def killFish(pulka, fish):
     if fish.crab == True:
         return
     if touchCheck(pulka, fish) == True:
+        fish.hp -= 1
         bullets.remove(pulka)
-        fishlist.remove(fish)
-        fish.fishKill.play()
-        MikeStatistics.score += 10
+        if fish.hp == 0:
+            fishlist.remove(fish)
+            fish.fishKill.play()
+            MikeStatistics.score += 10
 
 
 pygame.init()
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((1300, 750))
+pygame.display.set_caption("Diver Down")
+pygame.display.set_icon(pygame.image.load("Chest.png"))
 Mike = Diver(screen)
 
 
@@ -100,7 +124,7 @@ chest = Treasure(screen, "Chest.png")
 sword = Treasure(screen, "Sword.png")
 
 fishlist = []
-for i in range(0):
+for i in range(15):
     fish = Fish(screen, "FishR.png", "FishL.png")
     fishlist.append(fish)
 
@@ -168,12 +192,25 @@ while 1 == 1:
                 current.delete = True
             if current.delete == True:
                 bullets.remove(current)
+    elif gameMode == "Game Over":
+        MikeStatistics.gameOver()
+        pygame.display.flip()
+        time.sleep(3)
+        sys.exit()
+    elif gameMode == "Win":
+        MikeStatistics.Win()
+        pygame.display.flip()
+        time.sleep(3)
+        sys.exit()
     elif gameMode == "showLevel":
         MikeStatistics.showLevel()
         if firstShow == True:
             startTime = datetime.now()
             firstShow = False
-        if datetime.now().second - startTime.second > 2:
+        try:
+            if datetime.now().second - startTime.second > 2:
+                gameMode = "Game"
+        except:
             gameMode = "Game"
         if startTime is None:
             pass
